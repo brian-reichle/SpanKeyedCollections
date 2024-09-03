@@ -28,4 +28,19 @@
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Utils\Primes.g.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Primes.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Utils\Primes.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Primes.g.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
 </Project>
