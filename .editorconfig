@@ -96,9 +96,11 @@ csharp_new_line_between_query_expression_clauses = true
 
 dotnet_diagnostic.SA0001.severity = none
 dotnet_diagnostic.SA1101.severity = none
+dotnet_diagnostic.SA1201.severity = none
 dotnet_diagnostic.SA1309.severity = none
 dotnet_diagnostic.SA1400.severity = none
 dotnet_diagnostic.SA1516.severity = none
+dotnet_diagnostic.SA1205.severity = none
 
 dotnet_diagnostic.SX1309.severity = warning
 dotnet_diagnostic.SX1309S.severity = warning
