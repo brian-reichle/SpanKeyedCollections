@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SpanKeyedCollections.HashSet
+namespace SpanKeyedCollections
 {
 	/// <summary>
 	/// A hash-set of spans.
