@@ -251,6 +251,7 @@ namespace SpanKeyedCollections.Test
 
 			Assert.Multiple(() =>
 			{
+				Assert.That(dictionary2, Has.Count.EqualTo(2));
 				Assert.That(dictionary1["Foo".AsSpan()], Is.EqualTo(-7));
 				Assert.That(dictionary1["Bar".AsSpan()], Is.EqualTo(42));
 				Assert.That(dictionary2["Foo".AsSpan()], Is.EqualTo(7));
