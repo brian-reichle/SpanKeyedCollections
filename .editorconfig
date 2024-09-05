@@ -94,6 +94,9 @@ csharp_new_line_before_members_in_object_initializers = true
 csharp_new_line_before_members_in_anonymous_types = true
 csharp_new_line_between_query_expression_clauses = true
 
+# The throw helpers don't exist in all supported frameworks.
+dotnet_diagnostic.CA1510.severity = none
+
 dotnet_diagnostic.SA0001.severity = none
 dotnet_diagnostic.SA1101.severity = none
 dotnet_diagnostic.SA1201.severity = none
