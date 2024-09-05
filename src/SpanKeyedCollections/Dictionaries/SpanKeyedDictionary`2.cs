@@ -6,8 +6,16 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SpanKeyedCollections
 {
+	/// <summary>
+	/// A dictionary that allows ReadOnlySpan&lt;&gt;s to be used as the key.
+	/// </summary>
+	/// <typeparam name="TKeyElement">The element type of the key span.</typeparam>
+	/// <typeparam name="TValue">The value type.</typeparam>
 	public sealed class SpanKeyedDictionary<TKeyElement, TValue> : ISpanKeyedDictionary<TKeyElement, TValue>, ICloneable
 	{
+		/// <summary>
+		/// Creates a new SpanKeyedDictionary with the provided comparer and capacity.
+		/// </summary>
 		public SpanKeyedDictionary(ISpanEqualityComparer<TKeyElement> comparer, int capacity = DefaultCapacity)
 		{
 			_equalityComparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
@@ -22,11 +30,16 @@ namespace SpanKeyedCollections
 			ResetIndexes(_firstIndexes);
 		}
 
+		/// <inheritdoc />
 		public int Count => _count;
 
+		/// <inheritdoc />
 		public IEnumerable<SpanKey<TKeyElement>> Keys => new KeyCollection(this);
+
+		/// <inheritdoc />
 		public IEnumerable<TValue> Values => new ValueCollection(this);
 
+		/// <inheritdoc />
 		public TValue this[ReadOnlySpan<TKeyElement> key]
 		{
 			get
@@ -45,6 +58,7 @@ namespace SpanKeyedCollections
 			}
 		}
 
+		/// <inheritdoc />
 		public void Add(ReadOnlySpan<TKeyElement> key, TValue value)
 		{
 			var hash = _equalityComparer.GetHashCode(key);
@@ -57,6 +71,7 @@ namespace SpanKeyedCollections
 			AddCore(hash, key.ToArray(), value);
 		}
 
+		/// <inheritdoc />
 		public bool Remove(ReadOnlySpan<TKeyElement> key)
 		{
 			var hash = _equalityComparer.GetHashCode(key);
@@ -99,14 +114,20 @@ namespace SpanKeyedCollections
 			return true;
 		}
 
+		/// <inheritdoc />
 		public bool ContainsKey(ReadOnlySpan<TKeyElement> key)
 			=> TryGetValue(key, out _);
 
+		/// <inheritdoc />
 		public bool TryGetValue(ReadOnlySpan<TKeyElement> key, [MaybeNullWhen(false)] out TValue value)
 			=> TryGetCore(key, _equalityComparer.GetHashCode(key), out value);
 
+		/// <summary>
+		/// Creates a new copy of the dictionary.
+		/// </summary>
 		public SpanKeyedDictionary<TKeyElement, TValue> Clone() => new(this);
 
+		/// <inheritdoc />
 		public IEnumerator<KeyValuePair<SpanKey<TKeyElement>, TValue>> GetEnumerator()
 		{
 			for (var i = 0; i < _count; i++)
