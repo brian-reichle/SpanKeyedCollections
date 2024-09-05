@@ -156,6 +156,8 @@ namespace SpanKeyedCollections
 			_hashes = ArrayUtils.CloneArray(source._hashes);
 			_nextIndexes = ArrayUtils.CloneArray(source._nextIndexes);
 			_firstIndexes = ArrayUtils.CloneArray(source._firstIndexes);
+
+			_count = source._count;
 		}
 
 		bool TryGetCore(ReadOnlySpan<TKeyElement> key, int hash, [MaybeNullWhen(false)] out TValue result)
