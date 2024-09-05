@@ -4,23 +4,35 @@ using System.Runtime.InteropServices;
 
 namespace SpanKeyedCollections
 {
-	public sealed class BitwiseEqualityComparer<TKeyElement> : ISpanEqualityComparer<TKeyElement>
-		where TKeyElement : unmanaged
+	/// <summary>
+	/// Compares spans by looking at the raw bytes occupied by the span.
+	/// </summary>
+	/// <typeparam name="T">The element type of the spans to compare.</typeparam>
+	public sealed class BitwiseEqualityComparer<T> : ISpanEqualityComparer<T>
+		where T : unmanaged
 	{
+		/// <summary>
+		/// Create a new BitwiseEqualityComparer&lt;T&gt;.
+		/// </summary>
 		public BitwiseEqualityComparer()
 			: this(Environment.TickCount)
 		{
 		}
 
+		/// <summary>
+		/// Create a new BitwiseEqualityComparer&lt;T&gt; with the provided seed to use in hashing.
+		/// </summary>
 		public BitwiseEqualityComparer(int seed)
 		{
 			_seed = unchecked((uint)seed);
 		}
 
-		public bool Equals(ReadOnlySpan<TKeyElement> x, ReadOnlySpan<TKeyElement> y)
+		/// <inheritdoc />
+		public bool Equals(ReadOnlySpan<T> x, ReadOnlySpan<T> y)
 			=> Blittable.BitwiseEqual(x, y);
 
-		public int GetHashCode(ReadOnlySpan<TKeyElement> obj)
+		/// <inheritdoc />
+		public int GetHashCode(ReadOnlySpan<T> obj)
 			=> MurmurHash.Hash(_seed, MemoryMarshal.AsBytes(obj));
 
 		readonly uint _seed;

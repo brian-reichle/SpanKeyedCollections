@@ -6,6 +6,7 @@
     <RootNamespace>SpanKeyedCollections</RootNamespace>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>A set of collections that can perform lookups using spans as keys.</Description>
   </PropertyGroup>
 
