@@ -1,0 +1,3 @@
+[*.cs]
+# Static fields are only beneficial when used multiple times, this usually isn't the case in unit tests.
+dotnet_diagnostic.CA1861.severity = none
