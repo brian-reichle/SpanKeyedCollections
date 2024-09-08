@@ -5,13 +5,24 @@ using System.Runtime.InteropServices;
 
 namespace SpanKeyedCollections
 {
+	/// <summary>
+	/// A pool of string objects.
+	/// </summary>
 	public sealed class StringPool : ICloneable
 	{
+		/// <summary>
+		/// Create a new StringPool with the provided capacity.
+		/// </summary>
 		public StringPool(int capacity = DefaultCapacity)
 			: this(Environment.TickCount, capacity)
 		{
 		}
 
+		/// <summary>
+		/// Create a new StringPool with the provided seed and capacity.
+		/// </summary>
+		/// <param name="seed">The seed to use when generating string hashes.</param>
+		/// <param name="capacity">The initial capacity of the StringPool.</param>
 		public StringPool(int seed, int capacity = DefaultCapacity)
 		{
 			if (capacity < 0)
@@ -30,6 +41,12 @@ namespace SpanKeyedCollections
 			ResetIndexes(_firstIndexes);
 		}
 
+		/// <summary>
+		/// Attempt to fetch a string from the pool matching the provided text.
+		/// </summary>
+		/// <param name="text">The text to match.</param>
+		/// <param name="value">If this pool contained a matching string, then it will be returned in this out parameter.</param>
+		/// <returns>True if the pool contained a matching string, false otherwise.</returns>
 		public bool TryGetString(string text, [NotNullWhen(true)] out string? value)
 		{
 			if (text == null)
@@ -40,6 +57,12 @@ namespace SpanKeyedCollections
 			return TryGetString(text.AsSpan(), out value);
 		}
 
+		/// <summary>
+		/// Attempt to fetch a string from the pool matching the provided text.
+		/// </summary>
+		/// <param name="text">The text to match.</param>
+		/// <param name="value">If this pool contained a matching string, then it will be returned in this out parameter.</param>
+		/// <returns>True if the pool contained a matching string, false otherwise.</returns>
 		public bool TryGetString(ReadOnlySpan<char> text, [NotNullWhen(true)] out string? value)
 		{
 			if (text.Length == 0)
@@ -51,6 +74,11 @@ namespace SpanKeyedCollections
 			return TryGetCore(text, Hash(text), out value);
 		}
 
+		/// <summary>
+		/// Gets a string from this pool matching the provided text or adds and returns the provided text.
+		/// </summary>
+		/// <param name="text">The text to match.</param>
+		/// <returns>If the pool contains a matching string, then that string will be returned, otherwise it will return the string that was passed in.</returns>
 		public string GetString(string text)
 		{
 			if (text == null)
@@ -75,6 +103,11 @@ namespace SpanKeyedCollections
 			return result;
 		}
 
+		/// <summary>
+		/// Gets a string from this pool matching the provided text or adds and returns a new string generated from the provided span.
+		/// </summary>
+		/// <param name="text">The text to match.</param>
+		/// <returns>If the pool contains a matching string, then that string will be returned, otherwise it will return a new string created from the text passed in.</returns>
 		public string GetString(ReadOnlySpan<char> text)
 		{
 			if (text.Length == 0)
@@ -93,6 +126,9 @@ namespace SpanKeyedCollections
 			return result;
 		}
 
+		/// <summary>
+		/// Creates a copy of the StringPool.
+		/// </summary>
 		public StringPool Clone() => new(this);
 
 		object ICloneable.Clone() => Clone();
