@@ -18,7 +18,7 @@ namespace SpanKeyedCollections.Test
 		public void GetString_NewSpan()
 		{
 			var pool = new StringPool();
-			Assert.That(pool.GetString("FooBarBaz".AsSpan(3, 3)), Is.EqualTo("Bar"));
+			Assert.That(pool.GetString(NewBarSpan()), Is.EqualTo("Bar"));
 		}
 
 		[Test]
@@ -34,18 +34,36 @@ namespace SpanKeyedCollections.Test
 		public void GetString_ExistingSpan()
 		{
 			var pool = new StringPool();
-			var existing = pool.GetString("FooBarBaz".AsSpan(3, 3));
-			Assert.That(pool.GetString("BazBarFoo".AsSpan(3, 3)), Is.SameAs(existing));
+			var existing = pool.GetString(NewBarSpan());
+
+			Assert.Multiple(() =>
+			{
+				var span = NewBarSpan();
+				var baseline = GC.GetAllocatedBytesForCurrentThread();
+				var result = pool.GetString(span);
+				var allocated = GC.GetAllocatedBytesForCurrentThread() - baseline;
+
+				Assert.That(result, Is.SameAs(existing));
+				Assert.That(allocated, Is.Zero);
+			});
 		}
 
 		[Test]
 		public void GetString_ExistingString()
 		{
-#pragma warning disable CA1846 // Prefer 'AsSpan' over 'Substring'
 			var pool = new StringPool();
-			var existing = pool.GetString("FooBarBaz".Substring(3, 3));
-			Assert.That(pool.GetString("BazBarFoo".Substring(3, 3)), Is.SameAs(existing));
-#pragma warning restore CA1846 // Prefer 'AsSpan' over 'Substring'
+			var existing = pool.GetString(NewBarString());
+
+			Assert.Multiple(() =>
+			{
+				var str = NewBarString();
+				var baseline = GC.GetAllocatedBytesForCurrentThread();
+				var result = pool.GetString(str);
+				var allocated = GC.GetAllocatedBytesForCurrentThread() - baseline;
+
+				Assert.That(result, Is.SameAs(existing));
+				Assert.That(allocated, Is.Zero);
+			});
 		}
 
 		[Test]
@@ -55,8 +73,14 @@ namespace SpanKeyedCollections.Test
 
 			Assert.Multiple(() =>
 			{
-				Assert.That(pool.TryGetString("FooBarBaz".AsSpan(3, 3), out var result), Is.False);
-				Assert.That(result, Is.Null);
+				var span = NewBarSpan();
+				var baseline = GC.GetAllocatedBytesForCurrentThread();
+				var result = pool.TryGetString(span, out var outString);
+				var allocated = GC.GetAllocatedBytesForCurrentThread() - baseline;
+
+				Assert.That(result, Is.False);
+				Assert.That(outString, Is.Null);
+				Assert.That(allocated, Is.Zero);
 			});
 		}
 
@@ -67,8 +91,13 @@ namespace SpanKeyedCollections.Test
 
 			Assert.Multiple(() =>
 			{
-				Assert.That(pool.TryGetString("Baz", out var result), Is.False);
-				Assert.That(result, Is.Null);
+				var baseline = GC.GetAllocatedBytesForCurrentThread();
+				var result = pool.TryGetString("Baz", out var outString);
+				var allocated = GC.GetAllocatedBytesForCurrentThread() - baseline;
+
+				Assert.That(result, Is.False);
+				Assert.That(outString, Is.Null);
+				Assert.That(allocated, Is.Zero);
 			});
 		}
 
@@ -76,12 +105,18 @@ namespace SpanKeyedCollections.Test
 		public void TryGetString_ExistingSpan()
 		{
 			var pool = new StringPool();
-			var existing = pool.GetString("Bar");
+			var existing = pool.GetString(NewBarString());
 
 			Assert.Multiple(() =>
 			{
-				Assert.That(pool.TryGetString("FooBarBaz".AsSpan(3, 3), out var result), Is.True);
-				Assert.That(result, Is.SameAs(existing));
+				var span = NewBarSpan();
+				var baseline = GC.GetAllocatedBytesForCurrentThread();
+				var result = pool.TryGetString(span, out var outString);
+				var allocated = GC.GetAllocatedBytesForCurrentThread() - baseline;
+
+				Assert.That(result, Is.True);
+				Assert.That(outString, Is.SameAs(existing));
+				Assert.That(allocated, Is.Zero);
 			});
 		}
 
@@ -89,12 +124,18 @@ namespace SpanKeyedCollections.Test
 		public void TrgGetString_ExistingString()
 		{
 			var pool = new StringPool();
-			var existing = pool.GetString("Bar");
+			var existing = pool.GetString(NewBarString());
 
 			Assert.Multiple(() =>
 			{
-				Assert.That(pool.TryGetString("Bar", out var result), Is.True);
-				Assert.That(result, Is.SameAs(existing));
+				var str = NewBarString();
+				var baseline = GC.GetAllocatedBytesForCurrentThread();
+				var result = pool.TryGetString(str, out var outString);
+				var allocated = GC.GetAllocatedBytesForCurrentThread() - baseline;
+
+				Assert.That(result, Is.True);
+				Assert.That(outString, Is.SameAs(existing));
+				Assert.That(allocated, Is.Zero);
 			});
 		}
 
@@ -162,5 +203,8 @@ namespace SpanKeyedCollections.Test
 
 			static ReadOnlySpan<char> Text(int i) => "FooBarBazQux".AsSpan(i * 3, 3);
 		}
+
+		static ReadOnlySpan<char> NewBarSpan() => ['B', 'a', 'r'];
+		static string NewBarString() => new(['B', 'a', 'r']);
 	}
 }

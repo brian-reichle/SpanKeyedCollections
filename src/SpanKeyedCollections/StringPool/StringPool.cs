@@ -47,6 +47,9 @@ namespace SpanKeyedCollections
 		/// <param name="text">The text to match.</param>
 		/// <param name="value">If this pool contained a matching string, then it will be returned in this out parameter.</param>
 		/// <returns>True if the pool contained a matching string, false otherwise.</returns>
+		/// <remarks>
+		/// This method will not allocate.
+		/// </remarks>
 		public bool TryGetString(string text, [NotNullWhen(true)] out string? value)
 		{
 			if (text == null)
@@ -63,6 +66,9 @@ namespace SpanKeyedCollections
 		/// <param name="text">The text to match.</param>
 		/// <param name="value">If this pool contained a matching string, then it will be returned in this out parameter.</param>
 		/// <returns>True if the pool contained a matching string, false otherwise.</returns>
+		/// <remarks>
+		/// This method will not allocate.
+		/// </remarks>
 		public bool TryGetString(ReadOnlySpan<char> text, [NotNullWhen(true)] out string? value)
 		{
 			if (text.Length == 0)
@@ -79,6 +85,9 @@ namespace SpanKeyedCollections
 		/// </summary>
 		/// <param name="text">The text to match.</param>
 		/// <returns>If the pool contains a matching string, then that string will be returned, otherwise it will return the string that was passed in.</returns>
+		/// <remarks>
+		/// This method will not allocate if a matching string already exists in the StringPool.
+		/// </remarks>
 		public string GetString(string text)
 		{
 			if (text == null)
@@ -108,6 +117,9 @@ namespace SpanKeyedCollections
 		/// </summary>
 		/// <param name="text">The text to match.</param>
 		/// <returns>If the pool contains a matching string, then that string will be returned, otherwise it will return a new string created from the text passed in.</returns>
+		/// <remarks>
+		/// This method will not allocate if the string already exists in the StringPool.
+		/// </remarks>
 		public string GetString(ReadOnlySpan<char> text)
 		{
 			if (text.Length == 0)
